@@ -14,7 +14,129 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      episode_progress: {
+        Row: {
+          episode_number: number
+          id: string
+          season_number: number
+          tmdb_show_id: number
+          user_id: string
+          watched_at: string
+        }
+        Insert: {
+          episode_number: number
+          id?: string
+          season_number: number
+          tmdb_show_id: number
+          user_id: string
+          watched_at?: string
+        }
+        Update: {
+          episode_number?: number
+          id?: string
+          season_number?: number
+          tmdb_show_id?: number
+          user_id?: string
+          watched_at?: string
+        }
+        Relationships: []
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          id: string
+          updated_at: string
+          username: string
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id: string
+          updated_at?: string
+          username: string
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          id?: string
+          updated_at?: string
+          username?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          contains_spoilers: boolean
+          created_at: string
+          episode_number: number | null
+          id: string
+          rating: number
+          season_number: number | null
+          target_type: Database["public"]["Enums"]["review_target_enum"]
+          text: string
+          tmdb_show_id: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          contains_spoilers?: boolean
+          created_at?: string
+          episode_number?: number | null
+          id?: string
+          rating: number
+          season_number?: number | null
+          target_type: Database["public"]["Enums"]["review_target_enum"]
+          text?: string
+          tmdb_show_id: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          contains_spoilers?: boolean
+          created_at?: string
+          episode_number?: number | null
+          id?: string
+          rating?: number
+          season_number?: number | null
+          target_type?: Database["public"]["Enums"]["review_target_enum"]
+          text?: string
+          tmdb_show_id?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      watch_status: {
+        Row: {
+          created_at: string
+          id: string
+          status: Database["public"]["Enums"]["watch_status_enum"]
+          tmdb_show_id: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          status: Database["public"]["Enums"]["watch_status_enum"]
+          tmdb_show_id: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          status?: Database["public"]["Enums"]["watch_status_enum"]
+          tmdb_show_id?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -23,7 +145,13 @@ export type Database = {
       [_ in never]: never
     }
     Enums: {
-      [_ in never]: never
+      review_target_enum: "show" | "season" | "episode"
+      watch_status_enum:
+        | "watchlist"
+        | "watching"
+        | "paused"
+        | "dropped"
+        | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +278,15 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      review_target_enum: ["show", "season", "episode"],
+      watch_status_enum: [
+        "watchlist",
+        "watching",
+        "paused",
+        "dropped",
+        "completed",
+      ],
+    },
   },
 } as const
