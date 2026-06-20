@@ -9,38 +9,132 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ShowIdRouteImport } from './routes/show.$id'
+import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
+import { Route as ShowIdIndexRouteImport } from './routes/show.$id.index'
+import { Route as ShowIdSeasonNRouteImport } from './routes/show.$id.season.$n'
+import { Route as ShowIdSeasonNIndexRouteImport } from './routes/show.$id.season.$n.index'
+import { Route as ShowIdSeasonNEpisodeERouteImport } from './routes/show.$id.season.$n.episode.$e'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShowIdRoute = ShowIdRouteImport.update({
+  id: '/show/$id',
+  path: '/show/$id',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ProfileUsernameRoute = ProfileUsernameRouteImport.update({
+  id: '/profile/$username',
+  path: '/profile/$username',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ShowIdIndexRoute = ShowIdIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShowIdRoute,
+} as any)
+const ShowIdSeasonNRoute = ShowIdSeasonNRouteImport.update({
+  id: '/season/$n',
+  path: '/season/$n',
+  getParentRoute: () => ShowIdRoute,
+} as any)
+const ShowIdSeasonNIndexRoute = ShowIdSeasonNIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShowIdSeasonNRoute,
+} as any)
+const ShowIdSeasonNEpisodeERoute = ShowIdSeasonNEpisodeERouteImport.update({
+  id: '/episode/$e',
+  path: '/episode/$e',
+  getParentRoute: () => ShowIdSeasonNRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/show/$id': typeof ShowIdRouteWithChildren
+  '/show/$id/': typeof ShowIdIndexRoute
+  '/show/$id/season/$n': typeof ShowIdSeasonNRouteWithChildren
+  '/show/$id/season/$n/': typeof ShowIdSeasonNIndexRoute
+  '/show/$id/season/$n/episode/$e': typeof ShowIdSeasonNEpisodeERoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/show/$id': typeof ShowIdIndexRoute
+  '/show/$id/season/$n': typeof ShowIdSeasonNIndexRoute
+  '/show/$id/season/$n/episode/$e': typeof ShowIdSeasonNEpisodeERoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/profile/$username': typeof ProfileUsernameRoute
+  '/show/$id': typeof ShowIdRouteWithChildren
+  '/show/$id/': typeof ShowIdIndexRoute
+  '/show/$id/season/$n': typeof ShowIdSeasonNRouteWithChildren
+  '/show/$id/season/$n/': typeof ShowIdSeasonNIndexRoute
+  '/show/$id/season/$n/episode/$e': typeof ShowIdSeasonNEpisodeERoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/profile/$username'
+    | '/show/$id'
+    | '/show/$id/'
+    | '/show/$id/season/$n'
+    | '/show/$id/season/$n/'
+    | '/show/$id/season/$n/episode/$e'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/profile/$username'
+    | '/show/$id'
+    | '/show/$id/season/$n'
+    | '/show/$id/season/$n/episode/$e'
+  id:
+    | '__root__'
+    | '/'
+    | '/auth'
+    | '/profile/$username'
+    | '/show/$id'
+    | '/show/$id/'
+    | '/show/$id/season/$n'
+    | '/show/$id/season/$n/'
+    | '/show/$id/season/$n/episode/$e'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthRoute: typeof AuthRoute
+  ProfileUsernameRoute: typeof ProfileUsernameRoute
+  ShowIdRoute: typeof ShowIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +142,83 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/show/$id': {
+      id: '/show/$id'
+      path: '/show/$id'
+      fullPath: '/show/$id'
+      preLoaderRoute: typeof ShowIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/profile/$username': {
+      id: '/profile/$username'
+      path: '/profile/$username'
+      fullPath: '/profile/$username'
+      preLoaderRoute: typeof ProfileUsernameRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/show/$id/': {
+      id: '/show/$id/'
+      path: '/'
+      fullPath: '/show/$id/'
+      preLoaderRoute: typeof ShowIdIndexRouteImport
+      parentRoute: typeof ShowIdRoute
+    }
+    '/show/$id/season/$n': {
+      id: '/show/$id/season/$n'
+      path: '/season/$n'
+      fullPath: '/show/$id/season/$n'
+      preLoaderRoute: typeof ShowIdSeasonNRouteImport
+      parentRoute: typeof ShowIdRoute
+    }
+    '/show/$id/season/$n/': {
+      id: '/show/$id/season/$n/'
+      path: '/'
+      fullPath: '/show/$id/season/$n/'
+      preLoaderRoute: typeof ShowIdSeasonNIndexRouteImport
+      parentRoute: typeof ShowIdSeasonNRoute
+    }
+    '/show/$id/season/$n/episode/$e': {
+      id: '/show/$id/season/$n/episode/$e'
+      path: '/episode/$e'
+      fullPath: '/show/$id/season/$n/episode/$e'
+      preLoaderRoute: typeof ShowIdSeasonNEpisodeERouteImport
+      parentRoute: typeof ShowIdSeasonNRoute
+    }
   }
 }
 
+interface ShowIdSeasonNRouteChildren {
+  ShowIdSeasonNIndexRoute: typeof ShowIdSeasonNIndexRoute
+  ShowIdSeasonNEpisodeERoute: typeof ShowIdSeasonNEpisodeERoute
+}
+
+const ShowIdSeasonNRouteChildren: ShowIdSeasonNRouteChildren = {
+  ShowIdSeasonNIndexRoute: ShowIdSeasonNIndexRoute,
+  ShowIdSeasonNEpisodeERoute: ShowIdSeasonNEpisodeERoute,
+}
+
+const ShowIdSeasonNRouteWithChildren = ShowIdSeasonNRoute._addFileChildren(
+  ShowIdSeasonNRouteChildren,
+)
+
+interface ShowIdRouteChildren {
+  ShowIdIndexRoute: typeof ShowIdIndexRoute
+  ShowIdSeasonNRoute: typeof ShowIdSeasonNRouteWithChildren
+}
+
+const ShowIdRouteChildren: ShowIdRouteChildren = {
+  ShowIdIndexRoute: ShowIdIndexRoute,
+  ShowIdSeasonNRoute: ShowIdSeasonNRouteWithChildren,
+}
+
+const ShowIdRouteWithChildren =
+  ShowIdRoute._addFileChildren(ShowIdRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthRoute: AuthRoute,
+  ProfileUsernameRoute: ProfileUsernameRoute,
+  ShowIdRoute: ShowIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
