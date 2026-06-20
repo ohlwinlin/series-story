@@ -14,6 +14,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShowIdRouteImport } from './routes/show.$id'
 import { Route as ProfileUsernameRouteImport } from './routes/profile.$username'
 import { Route as ShowIdIndexRouteImport } from './routes/show.$id.index'
+import { Route as ShowIdSeasonNRouteImport } from './routes/show.$id.season.$n'
 import { Route as ShowIdSeasonNIndexRouteImport } from './routes/show.$id.season.$n.index'
 import { Route as ShowIdSeasonNEpisodeERouteImport } from './routes/show.$id.season.$n.episode.$e'
 
@@ -42,15 +43,20 @@ const ShowIdIndexRoute = ShowIdIndexRouteImport.update({
   path: '/',
   getParentRoute: () => ShowIdRoute,
 } as any)
-const ShowIdSeasonNIndexRoute = ShowIdSeasonNIndexRouteImport.update({
-  id: '/season/$n/',
-  path: '/season/$n/',
+const ShowIdSeasonNRoute = ShowIdSeasonNRouteImport.update({
+  id: '/season/$n',
+  path: '/season/$n',
   getParentRoute: () => ShowIdRoute,
 } as any)
+const ShowIdSeasonNIndexRoute = ShowIdSeasonNIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ShowIdSeasonNRoute,
+} as any)
 const ShowIdSeasonNEpisodeERoute = ShowIdSeasonNEpisodeERouteImport.update({
-  id: '/season/$n/episode/$e',
-  path: '/season/$n/episode/$e',
-  getParentRoute: () => ShowIdRoute,
+  id: '/episode/$e',
+  path: '/episode/$e',
+  getParentRoute: () => ShowIdSeasonNRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -59,6 +65,7 @@ export interface FileRoutesByFullPath {
   '/profile/$username': typeof ProfileUsernameRoute
   '/show/$id': typeof ShowIdRouteWithChildren
   '/show/$id/': typeof ShowIdIndexRoute
+  '/show/$id/season/$n': typeof ShowIdSeasonNRouteWithChildren
   '/show/$id/season/$n/': typeof ShowIdSeasonNIndexRoute
   '/show/$id/season/$n/episode/$e': typeof ShowIdSeasonNEpisodeERoute
 }
@@ -77,6 +84,7 @@ export interface FileRoutesById {
   '/profile/$username': typeof ProfileUsernameRoute
   '/show/$id': typeof ShowIdRouteWithChildren
   '/show/$id/': typeof ShowIdIndexRoute
+  '/show/$id/season/$n': typeof ShowIdSeasonNRouteWithChildren
   '/show/$id/season/$n/': typeof ShowIdSeasonNIndexRoute
   '/show/$id/season/$n/episode/$e': typeof ShowIdSeasonNEpisodeERoute
 }
@@ -88,6 +96,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/show/$id'
     | '/show/$id/'
+    | '/show/$id/season/$n'
     | '/show/$id/season/$n/'
     | '/show/$id/season/$n/episode/$e'
   fileRoutesByTo: FileRoutesByTo
@@ -105,6 +114,7 @@ export interface FileRouteTypes {
     | '/profile/$username'
     | '/show/$id'
     | '/show/$id/'
+    | '/show/$id/season/$n'
     | '/show/$id/season/$n/'
     | '/show/$id/season/$n/episode/$e'
   fileRoutesById: FileRoutesById
@@ -153,33 +163,52 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShowIdIndexRouteImport
       parentRoute: typeof ShowIdRoute
     }
+    '/show/$id/season/$n': {
+      id: '/show/$id/season/$n'
+      path: '/season/$n'
+      fullPath: '/show/$id/season/$n'
+      preLoaderRoute: typeof ShowIdSeasonNRouteImport
+      parentRoute: typeof ShowIdRoute
+    }
     '/show/$id/season/$n/': {
       id: '/show/$id/season/$n/'
-      path: '/season/$n'
+      path: '/'
       fullPath: '/show/$id/season/$n/'
       preLoaderRoute: typeof ShowIdSeasonNIndexRouteImport
-      parentRoute: typeof ShowIdRoute
+      parentRoute: typeof ShowIdSeasonNRoute
     }
     '/show/$id/season/$n/episode/$e': {
       id: '/show/$id/season/$n/episode/$e'
-      path: '/season/$n/episode/$e'
+      path: '/episode/$e'
       fullPath: '/show/$id/season/$n/episode/$e'
       preLoaderRoute: typeof ShowIdSeasonNEpisodeERouteImport
-      parentRoute: typeof ShowIdRoute
+      parentRoute: typeof ShowIdSeasonNRoute
     }
   }
 }
 
-interface ShowIdRouteChildren {
-  ShowIdIndexRoute: typeof ShowIdIndexRoute
+interface ShowIdSeasonNRouteChildren {
   ShowIdSeasonNIndexRoute: typeof ShowIdSeasonNIndexRoute
   ShowIdSeasonNEpisodeERoute: typeof ShowIdSeasonNEpisodeERoute
 }
 
-const ShowIdRouteChildren: ShowIdRouteChildren = {
-  ShowIdIndexRoute: ShowIdIndexRoute,
+const ShowIdSeasonNRouteChildren: ShowIdSeasonNRouteChildren = {
   ShowIdSeasonNIndexRoute: ShowIdSeasonNIndexRoute,
   ShowIdSeasonNEpisodeERoute: ShowIdSeasonNEpisodeERoute,
+}
+
+const ShowIdSeasonNRouteWithChildren = ShowIdSeasonNRoute._addFileChildren(
+  ShowIdSeasonNRouteChildren,
+)
+
+interface ShowIdRouteChildren {
+  ShowIdIndexRoute: typeof ShowIdIndexRoute
+  ShowIdSeasonNRoute: typeof ShowIdSeasonNRouteWithChildren
+}
+
+const ShowIdRouteChildren: ShowIdRouteChildren = {
+  ShowIdIndexRoute: ShowIdIndexRoute,
+  ShowIdSeasonNRoute: ShowIdSeasonNRouteWithChildren,
 }
 
 const ShowIdRouteWithChildren =
