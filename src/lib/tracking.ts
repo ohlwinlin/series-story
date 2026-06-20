@@ -195,7 +195,7 @@ export function useReviews(target: ReviewTarget) {
     queryFn: async () => {
       let q = supabase
         .from("reviews")
-        .select("*, profiles!reviews_user_id_fkey(username, avatar_url)")
+        .select("*")
         .eq("target_type", target.type)
         .eq("tmdb_show_id", target.tmdbShowId)
         .order("created_at", { ascending: false });
@@ -207,7 +207,17 @@ export function useReviews(target: ReviewTarget) {
       }
       const { data, error } = await q;
       if (error) throw error;
-      return data ?? [];
+      const reviews = data ?? [];
+      const userIds = Array.from(new Set(reviews.map((r) => r.user_id)));
+      let profilesById: Record<string, { username: string; avatar_url: string | null }> = {};
+      if (userIds.length > 0) {
+        const { data: profs } = await supabase
+          .from("profiles")
+          .select("id, username, avatar_url")
+          .in("id", userIds);
+        for (const p of profs ?? []) profilesById[p.id] = { username: p.username, avatar_url: p.avatar_url };
+      }
+      return reviews.map((r) => ({ ...r, profile: profilesById[r.user_id] ?? null }));
     },
   });
 }
