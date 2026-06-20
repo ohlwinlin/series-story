@@ -258,7 +258,7 @@ export function useUpsertReview(userId: string | undefined, target: ReviewTarget
         .eq("user_id", userId)
         .eq("target_type", target.type)
         .eq("tmdb_show_id", target.tmdbShowId);
-      if (target.type !== "show") q = q.eq("season_number", target.type === "show" ? null as any : (target as any).season);
+      if (target.type !== "show") q = q.eq("season_number", (target as any).season);
       if (target.type === "episode") q = q.eq("episode_number", target.episode);
       const { data: existing, error: selErr } = await q.maybeSingle();
       if (selErr) throw selErr;
