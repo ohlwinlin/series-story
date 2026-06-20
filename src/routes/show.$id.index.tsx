@@ -6,7 +6,7 @@ import { WatchStatusSelector } from "@/components/watch-status-selector";
 import { ReviewSection } from "@/components/review-section";
 import { useShowAvgRating } from "@/lib/tracking";
 
-export const Route = createFileRoute("/show/$id")({
+export const Route = createFileRoute("/show/$id/")({
   component: ShowPage,
 });
 
