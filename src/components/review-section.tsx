@@ -130,13 +130,13 @@ export function ReviewSection({ target, title = "Reviews" }: { target: ReviewTar
               <li key={r.id} className="rounded-lg border border-border bg-card p-4">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-2">
-                    {r.profiles?.username ? (
+                    {r.profile?.username ? (
                       <Link
                         to="/profile/$username"
-                        params={{ username: r.profiles.username }}
+                        params={{ username: r.profile.username }}
                         className="font-medium hover:underline"
                       >
-                        {r.profiles.username}
+                        {r.profile.username}
                       </Link>
                     ) : (
                       <span className="font-medium">Unknown</span>
