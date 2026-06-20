@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as ShowIdRouteImport } from './routes/show.$id'
+import { Route as ShowIdSeasonNRouteImport } from './routes/show.$id.season.$n'
 
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
@@ -28,35 +29,43 @@ const ShowIdRoute = ShowIdRouteImport.update({
   path: '/show/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ShowIdSeasonNRoute = ShowIdSeasonNRouteImport.update({
+  id: '/season/$n',
+  path: '/season/$n',
+  getParentRoute: () => ShowIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/show/$id': typeof ShowIdRoute
+  '/show/$id': typeof ShowIdRouteWithChildren
+  '/show/$id/season/$n': typeof ShowIdSeasonNRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/show/$id': typeof ShowIdRoute
+  '/show/$id': typeof ShowIdRouteWithChildren
+  '/show/$id/season/$n': typeof ShowIdSeasonNRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
-  '/show/$id': typeof ShowIdRoute
+  '/show/$id': typeof ShowIdRouteWithChildren
+  '/show/$id/season/$n': typeof ShowIdSeasonNRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/show/$id'
+  fullPaths: '/' | '/auth' | '/show/$id' | '/show/$id/season/$n'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/show/$id'
-  id: '__root__' | '/' | '/auth' | '/show/$id'
+  to: '/' | '/auth' | '/show/$id' | '/show/$id/season/$n'
+  id: '__root__' | '/' | '/auth' | '/show/$id' | '/show/$id/season/$n'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthRoute: typeof AuthRoute
-  ShowIdRoute: typeof ShowIdRoute
+  ShowIdRoute: typeof ShowIdRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -82,13 +91,31 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ShowIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/show/$id/season/$n': {
+      id: '/show/$id/season/$n'
+      path: '/season/$n'
+      fullPath: '/show/$id/season/$n'
+      preLoaderRoute: typeof ShowIdSeasonNRouteImport
+      parentRoute: typeof ShowIdRoute
+    }
   }
 }
+
+interface ShowIdRouteChildren {
+  ShowIdSeasonNRoute: typeof ShowIdSeasonNRoute
+}
+
+const ShowIdRouteChildren: ShowIdRouteChildren = {
+  ShowIdSeasonNRoute: ShowIdSeasonNRoute,
+}
+
+const ShowIdRouteWithChildren =
+  ShowIdRoute._addFileChildren(ShowIdRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthRoute: AuthRoute,
-  ShowIdRoute: ShowIdRoute,
+  ShowIdRoute: ShowIdRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
