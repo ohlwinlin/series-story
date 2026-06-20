@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { ReviewSection } from "@/components/review-section";
 
-export const Route = createFileRoute("/show/$id/season/$n")({
+export const Route = createFileRoute("/show/$id/season/$n/")({
   component: SeasonPage,
 });
 
