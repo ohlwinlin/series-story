@@ -80,9 +80,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
       { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { name: "description", content: "Track and review TV shows, manage your viewing progress, and share your thoughts with others." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Serialog — Track and review TV series" },
+      { property: "og:title", content: "Lovable App" },
       {
         property: "og:description",
         content: "Track what you watch, rate every episode, and share reviews.",
@@ -90,6 +90,11 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Lovable App" },
+      { property: "og:description", content: "Track and review TV shows, manage your viewing progress, and share your thoughts with others." },
+      { name: "twitter:description", content: "Track and review TV shows, manage your viewing progress, and share your thoughts with others." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fcfe3baa-30dd-4eb9-afea-a70c0e8f13b9/id-preview-4492aa99--5e6f6988-5d7d-4b57-b7b6-548648dae90d.lovable.app-1781986316101.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/fcfe3baa-30dd-4eb9-afea-a70c0e8f13b9/id-preview-4492aa99--5e6f6988-5d7d-4b57-b7b6-548648dae90d.lovable.app-1781986316101.png" },
     ],
     links: [
       {
