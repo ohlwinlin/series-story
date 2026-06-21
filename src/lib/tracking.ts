@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { tmdb, type TmdbSeasonDetail } from "@/lib/tmdb";
+import { tmdb, type TmdbSeasonDetail, type TmdbShowDetail } from "@/lib/tmdb";
 import { toast } from "sonner";
 
 export type WatchStatus = "watchlist" | "watching" | "paused" | "dropped" | "completed";
@@ -53,11 +53,40 @@ export function useSetWatchStatus(userId: string | undefined, tmdbShowId: number
             { onConflict: "user_id,tmdb_show_id" },
           );
         if (error) throw error;
+        if (status === "completed") {
+          // Mark every episode of every season as watched (idempotent upsert)
+          const show = await tmdb<TmdbShowDetail>(`tv/${tmdbShowId}`);
+          const seasons = (show.seasons ?? []).filter((s) => s.season_number > 0);
+          const seasonDetails = await Promise.all(
+            seasons.map((s) =>
+              tmdb<TmdbSeasonDetail>(`tv/${tmdbShowId}/season/${s.season_number}`),
+            ),
+          );
+          const rows = seasonDetails.flatMap((sd) =>
+            (sd.episodes ?? []).map((ep) => ({
+              user_id: userId,
+              tmdb_show_id: tmdbShowId,
+              season_number: sd.season_number,
+              episode_number: ep.episode_number,
+            })),
+          );
+          if (rows.length > 0) {
+            const { error: epErr } = await supabase
+              .from("episode_progress")
+              .upsert(rows, {
+                onConflict: "user_id,tmdb_show_id,season_number,episode_number",
+                ignoreDuplicates: true,
+              });
+            if (epErr) throw epErr;
+          }
+        }
       }
     },
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["watch_status", userId, tmdbShowId] });
       qc.invalidateQueries({ queryKey: ["profile_watch_lists", userId] });
+      qc.invalidateQueries({ queryKey: ["episode_progress", userId, tmdbShowId] });
+      qc.invalidateQueries({ queryKey: ["user_stats", userId] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
